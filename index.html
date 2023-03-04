@@ -1,0 +1,109 @@
+<html>
+
+<head>
+    <title>Soletrando as palavras</title>
+    <link href="bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        button:disabled {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <br />
+    <div class="container-fluid">
+        <table class="table" border="1">
+            <tr>
+                <td id="imagem" colspan="4"></td>
+            </tr>
+            <tbody id="palavras"></tbody>
+        </table>
+    </div>
+</body>
+
+</html>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script src="bootstrap-5.3.0-alpha1-dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var palavras = [
+            { soletrada: "MA-CA-CO", nome: "MACACO", valor: "macaco", img: "img/macaco.jpg" },
+            { soletrada: "TU-CA-NO", nome: "TUCANO", valor: "tucano", img: "img/tucano.jpg" },
+            { soletrada: "BA-NA-NA", nome: "BANANA", valor: "banana", img: "img/banana.jpg" },
+            { soletrada: "CA-NE-TA", nome: "CANETA", valor: "caneta", img: "img/caneta.jpg" },
+            { soletrada: "LI-XO", nome: "LIXO", valor: "lixo", img: "img/lixo.jpg" },
+            { soletrada: "CA-ME-LO", nome: "CAMELO", valor: "camelo", img: "img/camelo.jpg" },
+            { soletrada: "TA-TU", nome: "TATU", valor: "tatu", img: "img/tatu.jpg" },
+            { soletrada: "PA-TO", nome: "PATO", valor: "pato", img: "img/pato.jpg" },
+            { soletrada: "JA-CA-RÉ", nome: "JACARÉ", valor: "jacare", img: "img/jacare.jpg" },
+            { soletrada: "LO-BO", nome: "LOBO", valor: "lobo", img: "img/lobo.jpg" },
+            { soletrada: "SA-PO", nome: "SAPO", valor: "sapo", img: "img/sapo.jpg" },
+            { soletrada: "PI-PA", nome: "PIPA", valor: "pipa", img: "img/pipa.jpg" },
+            { soletrada: "BO-DE", nome: "BODE", valor: "bode", img: "img/bode.jpg" },
+            { soletrada: "RA-TO", nome: "RATO", valor: "rato", img: "img/rato.jpg" },
+            { soletrada: "BA-TA-TA", nome: "BATATA", valor: "batata", img: "img/batata.jpg" }
+        ];
+        var quantidade = palavras.length
+        var numeroSorteado = Math.floor(Math.random() * quantidade);
+        var palavraSorteada = palavras[numeroSorteado];
+        $("#imagem").html("<center><img src='" + palavraSorteada['img'] + "' style='width: 10rem; max-width: 10rem'/></center>");
+        var tr = "";
+        var posicaoPalavraSorteada = Math.floor(Math.random() * 3);
+        let palavraAleatoria = undefined;
+        let ArrnumeroOpcao = [];
+        for (let x = 0; x < 4; x++) {
+            if (x == posicaoPalavraSorteada) {
+                tr += "<tr><td><div class='d-grid gap-2'><button class='palavra btn btn-primary btn-lg' value='" + palavraSorteada['valor'] + "'>" + palavraSorteada['soletrada'] + "</button></div></td></tr>";
+            } else {
+                let numeroSorteadoAleatorio = Math.floor(Math.random() * quantidade);
+                palavraAleatoria = palavras[numeroSorteadoAleatorio];
+                console.log(numeroSorteado + '==' + numeroSorteadoAleatorio);
+                if (numeroSorteado == numeroSorteadoAleatorio || !jQuery.inArray(numeroSorteadoAleatorio, ArrnumeroOpcao)) {
+                    x--;
+                } else {
+                    tr += "<tr><td><div class='d-grid gap-2'><button class='palavra btn btn-primary btn-lg' value='" + palavraAleatoria['valor'] + "'>" + palavraAleatoria['soletrada'] + "</button></div></td></tr>";
+                }
+                ArrnumeroOpcao.push(numeroSorteadoAleatorio);
+            }
+        }
+        $("#palavras").html(tr);
+        $(".palavra").click(function () {
+            if (palavraSorteada['valor'] == $(this).val()) {
+                let btnGreen = document.querySelectorAll('.btn-primary')
+                btnGreen[posicaoPalavraSorteada].style.backgroundColor = "#16d70b"
+                btnGreen[posicaoPalavraSorteada].disabled = true;
+                function playSound() {
+                    let audio = new Audio();
+                    audio.src = "sound/resposta_certa.mp3";
+                    audio.loop = false;
+                    audio.play();
+                }
+                playSound()
+                console.log('acertou')
+                setTimeout(() => {
+                    location.reload()
+                }, "6000")
+            }
+            else {
+                let btnRed = document.querySelectorAll('.btn-primary')
+                for (let x = 0; x < 4; x++) {
+                    if (x != posicaoPalavraSorteada) {
+                        btnRed[x].onclick = this.style.backgroundColor = "#d70b1c"
+                        this.disabled = true;
+                    }
+                }
+                function playSound() {
+                    let audio = new Audio();
+                    audio.src = "sound/resposta_errada.mp3";
+                    audio.loop = false;
+                    audio.play();
+                    audio.SetVolume(0.5);
+                }
+                playSound()
+                console.log('errou')
+            }
+        });
+    });
+</script>
